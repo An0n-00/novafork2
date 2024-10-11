@@ -1,11 +1,14 @@
 
 
 <p align="center">
-  <strong>Nova</strong> – Your Gateway to Free Streaming
+  <h1><strong>NovaFork2</strong> – Your Gateway to Free Streaming With a Focus on Privacy</h1>
 </p>
 
-> **UPDATE ALERT**  
-> **NEW FEATURES AVAILABLE!**
+> [!IMPORTANT]
+> This is a Fork of the original [NovaFork](https://github.com/noname25495/novafork). Here I am just removing some things that annoy me (like the modals, ads and other blocking measurements). For any developement or feature requests, please refer to the original repository. If you find anything that you think should be removed, please open an issue or a pull request in here.
+
+_Rest of the Novafork README.md is below_
+---
 
 # Nova ☄
 

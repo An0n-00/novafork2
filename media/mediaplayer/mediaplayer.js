@@ -384,6 +384,7 @@ async function displaySelectedMedia(media, mediaType) {
             }
         });
 
+        /* Annoying ahh code
         let devToolsBlocked = true; // Toggle this to true or false
 
         function preventDevTools() {
@@ -413,6 +414,7 @@ async function displaySelectedMedia(media, mediaType) {
             }
         }
         preventDevTools();
+        */
 
         async function updateVideo() {
             try {
