@@ -296,7 +296,7 @@ $(document).ready(async function () {
             $franchiseSuggestions.append($suggestion);
         });
     }
-    
+
     $(document).on('click', function (event) {
         if (!$(event.target).closest('#franchiseSearchInput, #franchiseSuggestions').length) {
             $franchiseSuggestions.empty().addClass('hidden');
