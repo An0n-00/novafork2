@@ -328,28 +328,86 @@ async function getTvEmbedUrl(mediaId, seasonId, episodeId, provider, apiKey) {
         }
     }
 
-    function attemptFullscreenAndLockOrientation(element) {
-        // Only proceed if the element exists
-        if (!element) return;
-    
-        // Request Fullscreen
-        if (element.requestFullscreen) {
-            element.requestFullscreen().catch(err => {
-                console.warn('Fullscreen request failed:', err);
-            });
-        } else if (element.webkitRequestFullscreen) { /* Safari */
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) { /* IE11 */
-            element.msRequestFullscreen();
-        }
-    
-        // Lock Screen Orientation to Landscape
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(err => {
-                console.warn('Orientation lock failed:', err);
-            });
-        }
+
+// Define the functions first
+function enableOrientationLock() {
+    const element = document.documentElement; // Lock the orientation for the whole page
+    if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(err => {
+            console.warn('Orientation lock failed:', err);
+        });
+    } else {
+        console.warn('Orientation lock not supported on this device.');
     }
+    // Optionally, make element fullscreen
+    if (element.requestFullscreen) {
+        element.requestFullscreen().catch(err => {
+            console.warn('Fullscreen request failed:', err);
+        });
+    }
+}
+
+
+function disableOrientationLock() {
+    if (screen.orientation && screen.orientation.unlock) {
+        screen.orientation.unlock().catch(err => {
+            console.warn('Orientation unlock failed:', err);
+        });
+    }
+    // Exit fullscreen mode
+    if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => {
+            console.warn('Exiting fullscreen failed:', err);
+        });
+    }
+}
+
+// Now add the DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const orientationLockToggle = document.getElementById('orientationLockToggle');
+    const orientationLockEnabled = JSON.parse(localStorage.getItem('orientationLock')) || false;
+    orientationLockToggle.checked = orientationLockEnabled;
+
+    // Update lock orientation based on stored preference
+    if (orientationLockEnabled) {
+        enableOrientationLock();
+    }
+
+    // Event listener for the toggle switch
+    orientationLockToggle.addEventListener('change', (event) => {
+        const isEnabled = event.target.checked;
+        localStorage.setItem('orientationLock', isEnabled);
+        
+        if (isEnabled) {
+            enableOrientationLock();
+        } else {
+            disableOrientationLock();
+        }
+    });
+});
+
+
+
+
+function attemptFullscreenAndLockOrientation(element) {
+    const orientationLockEnabled = JSON.parse(localStorage.getItem('orientationLock')) || false;
+    if (!element || !orientationLockEnabled) return;
+
+    // Request Fullscreen
+    if (element.requestFullscreen) {
+        element.requestFullscreen().catch(err => {
+            console.warn('Fullscreen request failed:', err);
+        });
+    }
+
+    // Lock Screen Orientation to Landscape
+    if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(err => {
+            console.warn('Orientation lock failed:', err);
+        });
+    }
+}
+
 
     
 async function fetchMediaData(mediaId, mediaType, apiKey) {
@@ -521,7 +579,6 @@ async function displaySelectedMedia(media, mediaType) {
                             alert('No language selected.');
                             return;
                         }
-                        showLoadingScreen();
                         endpoint = await getMovieEmbedUrl(media.id, provider, apiKey, selectedLanguage);
                     } else if (provider === 'cinescrape') {
                         showLoadingScreen();
@@ -535,7 +592,7 @@ async function displaySelectedMedia(media, mediaType) {
                 if (provider === 'trailer') {
                     // Trailer display in an iframe
                     const iframeHtml = `
-                        <iframe src="${endpoint}" id="videoIframe" class="video-iframe" allowfullscreen loading="lazy" style="width: 100%; height: 600px;"></iframe>
+                        <iframe src="${endpoint}" id="videoIframe" class="video-iframe" allowfullscreen" style="width: 100%; height: 600px;" loading="lazy"></iframe>
                     `;
                     $videoPlayer.html(iframeHtml).removeClass('hidden');
                     $movieInfo.children().not($videoPlayer).addClass('hidden');
@@ -547,7 +604,7 @@ async function displaySelectedMedia(media, mediaType) {
                     // Cinescrape specific video setup
                     const videoHtml = `
                         <video id="mp4VideoPlayer" loading="lazy" preload="metadata" crossorigin="anonymous" controls style="height: 1000px; width: 100%;" class="video-element">
-                            <source data-src="${endpoint}" type="video/mp4">
+                            <source src="${endpoint}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     `;

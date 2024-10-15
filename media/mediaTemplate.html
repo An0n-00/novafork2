@@ -46,11 +46,11 @@
                   class="custom-select sm-select w-full bg-gray-800 text-white rounded-lg border border-gray-700 p-1 sm:p-2 focus:border-purple-400 focus:ring-purple-400 transition duration-200 ease-in-out">
             <option value="trailer">Trailer</option>
             <optgroup label="Best Providers (No Ads)">
-              <option value="vidlink">VidLink - Main Source</option>
-              <option value="filmxy">Filmxy - Multi Lang</option>
-              <option value="cinescrape">Cinescrape - 4K (DebateMyRoomba)</option>
               <option value="vidbinge">VidBinge - 4k </option>
-              <option value="vidsrcnl">VidSrc NL - Fallback</option>
+              <option value="vidsrcnl">VidSrc NL - Main Source</option>
+              <option value="cinescrape">Cinescrape - 4K (DebateMyRoomba)</option>
+              <option value="filmxy">Filmxy - Multi Lang</option>
+              <option value="vidlink">VidLink - Fallback</option>
               <option value="vidsrc">VidSrc - Fallback 2</option>
             </optgroup>
             <optgroup label="Alternative Providers (Ads May Appear)">
@@ -77,6 +77,15 @@
             </optgroup>
           </select>
         </div>
+
+        <!-- Orientation Lock Toggle -->
+      <div class="flex items-center justify-between">
+        <label for="orientationLockToggle" class="block text-xs sm:text-sm font-semibold text-gray-200">
+          <i class="fas fa-sync-alt mr-2"></i>Orientation Lock:
+        </label>
+        <input type="checkbox" id="orientationLockToggle" class="toggle-checkbox">
+      </div>
+
 
         <p class="text-xs note">Note: The "Best Providers (No Ads)" section contains providers with no ads. Other providers may include ads.</p>
 
