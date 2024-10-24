@@ -153,22 +153,12 @@ async function getMovieEmbedUrl(mediaId, provider, apiKey, language=null) {
                 const urlObj = new URL(videoUrl);
                 urlObj.protocol = 'https:';
                 videoUrl = urlObj.toString();
-
                 return videoUrl;
-
-                    videoUrl = urlObj.toString();
-
-                    return videoUrl;
-                } else {
-                    throw alert("Sorry, this movie is not available. (no link)");
-                }
             } catch (error) {
                 console.error('Error fetching video from Cinescrape:', error);
                 alert("Sorry, this movie is not available. (404)");
                 throw error;
             }
-
-
         case 'trailer':
             try {
                 const trailerUrl = await fetchTrailer(mediaId, 'movie', apiKey);
