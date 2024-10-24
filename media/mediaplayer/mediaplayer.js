@@ -1,5 +1,6 @@
 let selectedProvider = 'vidlink';
 
+
 async function getApiKey() {
     try {
         const response = await fetch('apis/config.json');
@@ -10,6 +11,7 @@ async function getApiKey() {
         return null;
     }
 }
+
 
 async function fetchJson(url) {
     try {
@@ -79,10 +81,11 @@ async function getMovieEmbedUrl(mediaId, provider, apiKey, language=null) {
                 const languageCode = language.toLowerCase();
                 const url = `https://cinescrape.com/global/${languageCode}/${mediaId}`;
                 const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw alert("Sorry, this movie is not available in the selected language. (404)");
                 const data = await response.json();
+                console.log(data)
                 const m3u8Link = data.streamData.data.link;
-                if (!m3u8Link) throw new Error('No m3u8 link found');
+                if (!m3u8Link) throw alert("Sorry, this movie is not available in the selected language. (no link)");
                 return m3u8Link;
             } catch (error) {
                 console.error('Error fetching video from filmxy:', error);
@@ -133,10 +136,6 @@ async function getMovieEmbedUrl(mediaId, provider, apiKey, language=null) {
             return `https://vidsrc.icu/embed/movie/${mediaId}`;
         case 'cinescrape':
             try {
-                // Random delay to simulate varying response times
-                const randomDelay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
-                await new Promise(resolve => setTimeout(resolve, randomDelay));
-
                 // Fetch movie data from the API
                 const response = await fetch(`http://159.203.29.118/movie/${mediaId}`);
                 if (!response.ok) throw new Error('Network response was not ok');
@@ -157,8 +156,15 @@ async function getMovieEmbedUrl(mediaId, provider, apiKey, language=null) {
 
                 return videoUrl;
 
+                    videoUrl = urlObj.toString();
+
+                    return videoUrl;
+                } else {
+                    throw alert("Sorry, this movie is not available. (no link)");
+                }
             } catch (error) {
-                console.error('Error fetching video:', error);
+                console.error('Error fetching video from Cinescrape:', error);
+                alert("Sorry, this movie is not available. (404)");
                 throw error;
             }
 
@@ -178,42 +184,14 @@ async function getMovieEmbedUrl(mediaId, provider, apiKey, language=null) {
     }
 }
 
-// Define loading messages
-const loadingMessages = [
-    { message: "Contacting server...", icon: "<i class='fas fa-satellite'></i>" },
-    { message: "Fetching data...", icon: "<i class='fas fa-download'></i>" },
-    { message: "URL received...", icon: "<i class='fas fa-link'></i>" },
-    { message: "Parsing data...", icon: "<i class='fas fa-search'></i>" },
-    { message: "Streaming in 4K HDR...", icon: "<i class='fas fa-tv'></i>" },
-    { message: "Almost ready...", icon: "<i class='fas fa-hourglass-half'></i>" }
-];
-
-// Function to show loading screen and initiate progress
+// Function to show loading screen and initiate progress bar - disabled by An0n-00
 function showLoadingScreen() {
-    const loadingScreen = document.getElementById('loadingScreen');
-    const progressBar = document.getElementById('progressBar');
-    const loadingMessage = document.getElementById('loadingMessage');
-
-    let currentProgress = 0;
-    loadingScreen.classList.remove('hidden');
-
-    // Interval to simulate loading progress and change messages
-    const interval = setInterval(() => {
-        if (currentProgress >= 100) {
-            clearInterval(interval);
-            loadingScreen.classList.add('hidden');
-        } else {
-            currentProgress += Math.floor(Math.random() * 15) + 5;
-            progressBar.style.width = `${currentProgress}%`;
-            const messageIndex = Math.min(Math.floor(currentProgress / 20), loadingMessages.length - 1);
-            loadingMessage.innerHTML = `${loadingMessages[messageIndex].icon} ${loadingMessages[messageIndex].message}`;
-        }
-    }, 2000);
+    return;
 }
-// Function to hide loading screen
+
+// Function to hide loading screen - disabled by An0n-00
 function hideLoadingScreen() {
-    const loadingScreen = document.getElementById("loadingScreen");
-    loadingScreen.classList.add("hidden");
+    return;
 }
 
 async function getTvEmbedUrl(mediaId, seasonId, episodeId, provider, apiKey) {
@@ -384,8 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-
 function attemptFullscreenAndLockOrientation(element) {
     const orientationLockEnabled = JSON.parse(localStorage.getItem('orientationLock')) || false;
     if (!element || !orientationLockEnabled) return;
@@ -406,14 +382,15 @@ function attemptFullscreenAndLockOrientation(element) {
 }
 
 
-
 async function fetchMediaData(mediaId, mediaType, apiKey) {
     return fetchJson(`https://api.themoviedb.org/3/${mediaType}/${mediaId}?api_key=${apiKey}`);
 }
 
+
 async function fetchCastData(mediaId, mediaType, apiKey) {
     return fetchJson(`https://api.themoviedb.org/3/${mediaType}/${mediaId}/credits?api_key=${apiKey}`);
 }
+
 
 async function fetchTrailer(mediaId, mediaType, apiKey) {
     const data = await fetchJson(`https://api.themoviedb.org/3/${mediaType}/${mediaId}/videos?api_key=${apiKey}`);
