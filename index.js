@@ -1,4 +1,4 @@
-function handleError(message, error, showAlert = false) {
+function handleError(message, error, showAlert = true) {
     console.error(message, error);
     if (showAlert) {
         alert(message);
@@ -910,7 +910,6 @@ $(document).ready(async function () {
         const title = urlParams.get('title');
     
         if (mediaType && mediaId) {
-            const mediaPath = `${mediaType}/${mediaId}`;
             await fetchSelectedMedia(mediaPath);
         } else if (title) {
             const response = await $.getJSON(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(title)}`);
